@@ -1,14 +1,11 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title="Nexa Panel")
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
 
 @app.get("/", response_class=HTMLResponse)
-def dashboard():
+def login():
 
     return """
 <!DOCTYPE html>
@@ -17,262 +14,80 @@ def dashboard():
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexa Panel - Login</title>
 
-    <title>Nexa Panel</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #080b12;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    <link rel="stylesheet" href="/static/style.css">
+        .login-box {
+            width: 350px;
+            background: #0d111a;
+            border: 1px solid #1d2430;
+            border-radius: 18px;
+            padding: 30px;
+        }
+
+        h1 {
+            margin: 0;
+            text-align: center;
+        }
+
+        p {
+            text-align: center;
+            color: #697386;
+            font-size: 13px;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 12px;
+            padding: 13px;
+            border-radius: 10px;
+            border: 1px solid #1d2430;
+            background: #080b12;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 18px;
+            padding: 13px;
+            border: 0;
+            border-radius: 10px;
+            background: #5b5bf7;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="login-box">
 
-    <aside class="sidebar">
+    <h1>NEXA</h1>
 
-        <div class="logo">
-            <h1>NEXA</h1>
-            <span>CONTROL PANEL</span>
-        </div>
+    <p>ورود به پنل مدیریت</p>
 
-        <nav class="menu">
+    <form>
+        <input type="text" placeholder="نام کاربری">
 
-            <button class="active">
-                <span>◈ &nbsp; داشبورد</span>
-            </button>
+        <input type="password" placeholder="رمز عبور">
 
-            <button>
-                <span>◉ &nbsp; کاربران</span>
-            </button>
-
-            <button>
-                <span>◇ &nbsp; سرویس‌ها</span>
-            </button>
-
-            <button>
-                <span>▣ &nbsp; گزارش‌ها</span>
-            </button>
-
-            <button>
-                <span>⚙ &nbsp; تنظیمات</span>
-            </button>
-
-        </nav>
-
-    </aside>
-
-
-    <section class="content">
-
-        <header class="header">
-
-            <div>
-                <h2>داشبورد</h2>
-
-                <p>
-                    مدیریت و نظارت بر سیستم
-                </p>
-            </div>
-
-
-            <div class="profile">
-
-                <div>
-                    <strong>Admin</strong>
-                </div>
-
-                <div class="avatar">
-                    A
-                </div>
-
-            </div>
-
-        </header>
-
-
-        <main class="main">
-
-            <section class="cards">
-
-                <div class="card">
-
-                    <div class="card-title">
-                        کاربران
-                    </div>
-
-                    <div class="card-value">
-                        128
-                    </div>
-
-                    <div class="card-info">
-                        کاربران ثبت شده
-                    </div>
-
-                </div>
-
-
-                <div class="card">
-
-                    <div class="card-title">
-                        آنلاین
-                    </div>
-
-                    <div class="card-value">
-                        47
-                    </div>
-
-                    <div class="card-info">
-                        اتصال فعال
-                    </div>
-
-                </div>
-
-
-                <div class="card">
-
-                    <div class="card-title">
-                        مصرف امروز
-                    </div>
-
-                    <div class="card-value">
-                        184 GB
-                    </div>
-
-                    <div class="card-info">
-                        ترافیک مصرف شده
-                    </div>
-
-                </div>
-
-
-                <div class="card">
-
-                    <div class="card-title">
-                        وضعیت سیستم
-                    </div>
-
-                    <div class="card-value">
-                        Online
-                    </div>
-
-                    <div class="card-info">
-                        همه سرویس‌ها فعال هستند
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <section class="panel">
-
-                <div class="panel-header">
-
-                    <div>
-                        <h3>
-                            کاربران اخیر
-                        </h3>
-
-                        <span>
-                            آخرین کاربران سیستم
-                        </span>
-                    </div>
-
-                </div>
-
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-                            <th>کاربر</th>
-                            <th>وضعیت</th>
-                            <th>مصرف</th>
-                            <th>انقضا</th>
-                        </tr>
-
-                    </thead>
-
-
-                    <tbody>
-
-                        <tr>
-
-                            <td>
-                                Ali
-                            </td>
-
-                            <td>
-                                <span class="status online">
-                                    فعال
-                                </span>
-                            </td>
-
-                            <td>
-                                42.8 GB
-                            </td>
-
-                            <td>
-                                12 روز
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>
-                                Reza
-                            </td>
-
-                            <td>
-                                <span class="status online">
-                                    فعال
-                                </span>
-                            </td>
-
-                            <td>
-                                18.2 GB
-                            </td>
-
-                            <td>
-                                24 روز
-                            </td>
-
-                        </tr>
-
-
-                        <tr>
-
-                            <td>
-                                Sara
-                            </td>
-
-                            <td>
-                                <span class="status offline">
-                                    منقضی
-                                </span>
-                            </td>
-
-                            <td>
-                                91.4 GB
-                            </td>
-
-                            <td>
-                                تمام شده
-                            </td>
-
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </section>
-
-        </main>
-
-    </section>
+        <button type="submit">
+            ورود
+        </button>
+    </form>
 
 </div>
 
