@@ -1,27 +1,45 @@
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+import os
+
+from fastapi import FastAPI, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
+from starlette.middleware.sessions import SessionMiddleware
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI(title="Nexa Panel")
 
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=os.getenv("SESSION_SECRET", "change-this-secret"),
+)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "")
+
 
 @app.get("/", response_class=HTMLResponse)
-def login():
+def home():
 
     return """
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexa Panel - Login</title>
+    <title>Nexa Panel</title>
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
             min-height: 100vh;
             background: #080b12;
-            color: white;
+            color: #fff;
             font-family: Arial, sans-serif;
             display: flex;
             align-items: center;
@@ -29,7 +47,7 @@ def login():
         }
 
         .login-box {
-            width: 350px;
+            width: 360px;
             background: #0d111a;
             border: 1px solid #1d2430;
             border-radius: 18px;
@@ -44,16 +62,14 @@ def login():
         p {
             text-align: center;
             color: #697386;
-            font-size: 13px;
         }
 
         input {
             width: 100%;
-            box-sizing: border-box;
             margin-top: 12px;
             padding: 13px;
-            border-radius: 10px;
             border: 1px solid #1d2430;
+            border-radius: 10px;
             background: #080b12;
             color: white;
         }
@@ -79,10 +95,20 @@ def login():
 
     <p>ورود به پنل مدیریت</p>
 
-    <form>
-        <input type="text" placeholder="نام کاربری">
+    <form method="post" action="/login">
+        <input
+            type="text"
+            name="username"
+            placeholder="نام کاربری"
+            required
+        >
 
-        <input type="password" placeholder="رمز عبور">
+        <input
+            type="password"
+            name="password"
+            placeholder="رمز عبور"
+            required
+        >
 
         <button type="submit">
             ورود
@@ -94,3 +120,17 @@ def login():
 </body>
 </html>
 """
+
+
+@app.post("/login")
+def login(username: str = Form(...), password: str = Form(...)):
+
+    if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+        response = RedirectResponse("/", status_code=303)
+        response.set_cookie("nexa_logged_in", "1", httponly=True)
+        return response
+
+    return HTMLResponse(
+        "<h3 style='text-align:center;margin-top:100px'>نام کاربری یا رمز عبور اشتباه است.</h3>",
+        status_code=401,
+    )
